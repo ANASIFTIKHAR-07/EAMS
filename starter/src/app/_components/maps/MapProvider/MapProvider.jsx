@@ -9,7 +9,7 @@ const libraries = ["places", "drawing", "geometry"];
 function MapProvider({ children }) {
   // Load the Google Maps JavaScript API asynchronously
   const { isLoaded: scriptLoaded, loadError } = useJsApiLoader({
-    googleMapsApiKey: "AIzaSyCJM0a8oSaRMwxthozENQg1euRI51aNXJQ",
+    googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
     libraries: libraries,
   });
 
