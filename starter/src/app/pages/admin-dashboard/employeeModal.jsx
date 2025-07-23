@@ -7,6 +7,7 @@ import {
   Button,
   TextField,
   Stack,
+  MenuItem,
 } from "@mui/material";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -20,6 +21,7 @@ const EmployeeModal = ({ open, mode, employee, onClose, onSuccess }) => {
     phone: "",
     designation: "",
     password: "",
+    status: "active", // default value
   });
 
   useEffect(() => {
@@ -29,7 +31,8 @@ const EmployeeModal = ({ open, mode, employee, onClose, onSuccess }) => {
         email: employee.email || "",
         phone: employee.phone || "",
         designation: employee.designation || "",
-        password: "", 
+        password: "", // not editable
+        status: employee.status || "active",
       });
     } else {
       setFormData({
@@ -38,6 +41,7 @@ const EmployeeModal = ({ open, mode, employee, onClose, onSuccess }) => {
         phone: "",
         designation: "",
         password: "",
+        status: "active",
       });
     }
   }, [isEdit, employee, open]);
@@ -58,18 +62,21 @@ const EmployeeModal = ({ open, mode, employee, onClose, onSuccess }) => {
           formData,
           { withCredentials: true }
         );
+        toast.success("Employee updated successfully!");
       } else {
         await axios.post(
           "http://localhost:7000/api/v1/employees",
           formData,
           { withCredentials: true }
         );
+        toast.success("Employee created successfully!");
       }
-      toast.success("Employee updated successfully!");
+
       onSuccess(); // refresh list
       onClose();   // close modal
     } catch (err) {
       console.error("Submit failed", err);
+      toast.error("❌ Something went wrong while saving employee.");
     }
   };
 
@@ -116,6 +123,20 @@ const EmployeeModal = ({ open, mode, employee, onClose, onSuccess }) => {
               value={formData.password}
               onChange={handleChange}
             />
+          )}
+
+          {isEdit && (
+            <TextField
+              select
+              label="Status"
+              name="status"
+              fullWidth
+              value={formData.status}
+              onChange={handleChange}
+            >
+              <MenuItem value="active">Active</MenuItem>
+              <MenuItem value="suspended">Suspended</MenuItem>
+            </TextField>
           )}
         </Stack>
       </DialogContent>
